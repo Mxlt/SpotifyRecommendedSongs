@@ -54,13 +54,18 @@ router.get("/", async (req, res) => {
   // res.status(200).json(songs);
 
   let songs = [];
-  fetch("https://api.spotify.com/v1/me/tracks", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + req.user.accessToken
-    },
-    json: true
-  })
+  fetch(
+    "https://api.spotify.com/v1/me/tracks?offset=" +
+      req.query.offset +
+      "&limit=50",
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + req.user.accessToken
+      },
+      json: true
+    }
+  )
     .then(results => results.json())
     .then(apiResponse => {
       let limit = apiResponse.limit;
@@ -87,7 +92,6 @@ router.get("/", async (req, res) => {
       }
 
       Promise.all(promises).then(() => {
-        console.log("songs: *********************" + songs);
         res.status(200).json(songs);
       });
     })
